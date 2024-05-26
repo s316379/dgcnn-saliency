@@ -1,0 +1,5 @@
+dgcnn-master/data/
+dgcnn-master/log/
+*.pyc
+.DS_Store
+dgcnn-master/.DS_Store
