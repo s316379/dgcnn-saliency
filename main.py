@@ -123,6 +123,8 @@ def main():
     parser.add_argument('--num_steps', type=int, default=10, help='num of steps to drop each step')
     parser.add_argument('--drop_neg', action='store_true',help='drop negative points')
     parser.add_argument('--power', type=int, default=6, help='x: -dL/dr*r^x')
+    parser.add_argument('--subset', type=int, default=False, help='If dataset has to be subesetted or not')
+
 
     args = parser.parse_args()
 
@@ -138,7 +140,9 @@ def main():
     indices = np.random.choice(len(modelnet), 24, replace=False)
     subset_modelnet = Subset(modelnet, indices)
     
-    test_loader = DataLoader(subset_modelnet, batch_size=args.test_batch_size, shuffle=False)
+    dataset = modelnet if args.subset == True else subset_modelnet
+
+    test_loader = DataLoader(dataset, batch_size=args.test_batch_size, shuffle=False)
     device = torch.device("cpu")
     
     model = DGCNN_CAMGRAD(args).to(device)
