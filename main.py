@@ -23,8 +23,6 @@ from cprint import *
 
 criterion = cal_loss
 
-SHAPE_NAMES = [line.rstrip() for line in \
-    open(os.path.join(BASE_DIR, 'dgcnn-master/pytorch/data/modelnet40_ply_hdf5_2048/shape_names.txt'))] 
 DUMP_DIR = 'dump'
 all_counters = np.zeros((40, 3), dtype=int)
 
@@ -68,7 +66,7 @@ def drop_points(pointclouds_pl, labels_pl, args, model):
         
     return pointclouds_pl_adv
 
-def plot_natural_and_advsarial_samples_all_situation(pointclouds_pl, pointclouds_pl_adv, labels_pl, pred_val, pred_val_adv, all_counters):
+def plot_natural_and_advsarial_samples_all_situation(pointclouds_pl, pointclouds_pl_adv, labels_pl, pred_val, pred_val_adv, all_counters, SHAPE_NAMES):
     for i in range(labels_pl.shape[0]):
         if labels_pl[i] == pred_val[i]:
             if labels_pl[i] != pred_val_adv[i]:
@@ -136,6 +134,9 @@ def main():
     # download modelnet if not exists
     download()
 
+    SHAPE_NAMES = [line.rstrip() for line in \
+    open(os.path.join(BASE_DIR, 'dgcnn-master/pytorch/data/modelnet40_ply_hdf5_2048/shape_names.txt'))] 
+
     modelnet = ModelNet40(partition='test', num_points=1024)
     indices = np.random.choice(len(modelnet), 24, replace=False)
     subset_modelnet = Subset(modelnet, indices)
@@ -180,7 +181,7 @@ def main():
         test_true_adv.append(label.cpu().numpy())
         test_pred_adv.append(preds_adv.detach().cpu().numpy())
 
-        plot_natural_and_advsarial_samples_all_situation(data.detach().numpy(), adversial_data.detach().numpy(), label.detach().numpy(), preds.detach().numpy(), preds_adv.detach().numpy(), all_counters)
+        plot_natural_and_advsarial_samples_all_situation(data.detach().numpy(), adversial_data.detach().numpy(), label.detach().numpy(), preds.detach().numpy(), preds_adv.detach().numpy(), all_counters, SHAPE_NAMES)
 
     test_true = np.concatenate(test_true)
     test_pred = np.concatenate(test_pred)
