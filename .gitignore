@@ -5,3 +5,4 @@ dgcnn-master/log/
 dgcnn-master/.DS_Store
 data/
 .vscode/
+dump/*/*

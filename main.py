@@ -126,6 +126,11 @@ def main():
 
     args = parser.parse_args()
 
+    ## 3 folders to store all the situations
+    if not os.path.exists(DUMP_DIR+'/pred_correct_adv_wrong'): os.mkdir(DUMP_DIR+'/pred_correct_adv_wrong')
+    if not os.path.exists(DUMP_DIR+'/pred_wrong_adv_correct'): os.mkdir(DUMP_DIR+'/pred_wrong_adv_correct')
+    if not os.path.exists(DUMP_DIR+'/pred_wrong_adv_wrong'): os.mkdir(DUMP_DIR+'/pred_wrong_adv_wrong')
+
     # download modelnet if not exists
     download()
 
@@ -166,12 +171,12 @@ def main():
         test_pred.append(preds.detach().cpu().numpy())
 
         # ADVERSIAL DATA
-        logits = model(adversial_data)        
-        preds = logits.max(dim=1)[1]
+        logits_adv = model(adversial_data)        
+        preds_adv = logits_adv.max(dim=1)[1]
         test_true_adv.append(label.cpu().numpy())
-        test_pred_adv.append(preds.detach().cpu().numpy())
+        test_pred_adv.append(preds_adv.detach().cpu().numpy())
 
-        # plot_natural_and_advsarial_samples_all_situation()
+        plot_natural_and_advsarial_samples_all_situation(data.detach().numpy(), adversial_data.detach().numpy(), label.detach().numpy(), preds.detach().numpy(), preds_adv.detach().numpy(), all_counters)
 
     test_true = np.concatenate(test_true)
     test_pred = np.concatenate(test_pred)

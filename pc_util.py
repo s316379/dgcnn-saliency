@@ -300,13 +300,13 @@ def pyplot_draw_point_cloud_nat_and_adv(points, points_adv, output_filename):
     matplotlib.use('Agg') 
     import matplotlib.pyplot as plt
     fig = plt.figure()
-    xmin, xmax = np.min(points[:,0])-0.1, np.max(points[:,0])+0.1
-    ymin, ymax = np.min(points[:,1])-0.1, np.max(points[:,1])+0.1
-    zmin, zmax = np.min(points[:,2])-0.1, np.max(points[:,2])+0.1
+    xmin, xmax = np.min(points[0])-0.1, np.max(points[0])+0.1
+    ymin, ymax = np.min(points[1])-0.1, np.max(points[1])+0.1
+    zmin, zmax = np.min(points[2])-0.1, np.max(points[2])+0.1
     
     
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(points[:,1], points[:,2], points[:,0], s=5, c='b')
+    ax.scatter(points[1], points[2], points[0], s=5, c='b')
     ax.set_xlabel('y')
     ax.set_ylabel('z')
     ax.set_zlabel('x')
@@ -319,7 +319,7 @@ def pyplot_draw_point_cloud_nat_and_adv(points, points_adv, output_filename):
     
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(points_adv[:,1], points_adv[:,2], points_adv[:,0], s=5, c='r')
+    ax.scatter(points_adv[1], points_adv[2], points_adv[0], s=5, c='r')
     ax.set_xlabel('y')
     ax.set_ylabel('z')
     ax.set_zlabel('x')
@@ -332,7 +332,7 @@ def pyplot_draw_point_cloud_nat_and_adv(points, points_adv, output_filename):
     
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(points[:,2], points[:,0], points[:,1], s=5, c='b')
+    ax.scatter(points[2], points[0], points[1], s=5, c='b')
     ax.set_xlabel('z')
     ax.set_ylabel('x')
     ax.set_zlabel('y')
@@ -345,7 +345,7 @@ def pyplot_draw_point_cloud_nat_and_adv(points, points_adv, output_filename):
     
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(points_adv[:,2], points_adv[:,0], points_adv[:,1], s=5, c='r')
+    ax.scatter(points_adv[2], points_adv[0], points_adv[1], s=5, c='r')
     ax.set_xlabel('z')
     ax.set_ylabel('x')
     ax.set_zlabel('y')
@@ -358,7 +358,7 @@ def pyplot_draw_point_cloud_nat_and_adv(points, points_adv, output_filename):
     
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(points[:,0], points[:,1], points[:,2], s=5, c='b')
+    ax.scatter(points[0], points[1], points[2], s=5, c='b')
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_zlabel('z')
@@ -371,7 +371,7 @@ def pyplot_draw_point_cloud_nat_and_adv(points, points_adv, output_filename):
     
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(points_adv[:,0], points_adv[:,1], points_adv[:,2], s=5, c='r')
+    ax.scatter(points_adv[0], points_adv[1], points_adv[2], s=5, c='r')
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_zlabel('z')
@@ -393,7 +393,7 @@ def write_ply_color(points, labels, out_filename, num_classes=None):
     """ Color (N,3) points with labels (N) within range 0 ~ num_classes-1 as OBJ file """
     import matplotlib.pyplot as pyplot
     labels = labels.astype(int)
-    N = points.shape[0]
+    N = points.shape[1]
     if num_classes is None:
         num_classes = np.max(labels)+1
     else:
@@ -404,5 +404,5 @@ def write_ply_color(points, labels, out_filename, num_classes=None):
     for i in range(N):
         c = colors[labels[i]]
         c = [int(x*255) for x in c]
-        fout.write('v %f %f %f %d %d %d\n' % (points[i,0],points[i,1],points[i,2],c[0],c[1],c[2]))
+        fout.write('v %f %f %f %d %d %d\n' % (points[0,1],points[1,i],points[2,i],c[:,0],c[:,1],c[:,2]))
     fout.close()
