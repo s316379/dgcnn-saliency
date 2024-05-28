@@ -24,10 +24,9 @@ def download():
     if not os.path.exists(os.path.join(DATA_DIR, 'modelnet40_ply_hdf5_2048')):
         www = 'https://shapenet.cs.stanford.edu/media/modelnet40_ply_hdf5_2048.zip'
         zipfile = os.path.basename(www)
-        os.system('wget %s --no-check-certificate' % (www))
-        os.system('unzip %s/%s' % (BASE_DIR, zipfile))
-        os.system('mv %s %s' % (zipfile[:-4], DATA_DIR))
-        os.system('rm %s' % (zipfile))
+        os.system('wget %s --no-check-certificate -p %s' % (www, DATA_DIR))
+        os.system('unzip %s/%s' % (DATA_DIR, zipfile))
+        os.system('rm %s/%s' % (DATA_DIR, zipfile))
 
 
 def load_data(partition):
