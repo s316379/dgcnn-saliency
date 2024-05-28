@@ -121,7 +121,7 @@ def main():
     parser.add_argument('--num_steps', type=int, default=10, help='num of steps to drop each step')
     parser.add_argument('--drop_neg', action='store_true',help='drop negative points')
     parser.add_argument('--power', type=int, default=6, help='x: -dL/dr*r^x')
-    parser.add_argument('--subset', type=int, default=False, help='If dataset has to be subesetted or not')
+    parser.add_argument('--subset', type=bool, default=False, help='If dataset has to be subesetted or not')
 
 
     args = parser.parse_args()
