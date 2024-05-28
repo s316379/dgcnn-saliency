@@ -127,6 +127,7 @@ def main():
     args = parser.parse_args()
 
     ## 3 folders to store all the situations
+    if not os.path.exists(DUMP_DIR): os.mkdir(DUMP_DIR)
     if not os.path.exists(DUMP_DIR+'/pred_correct_adv_wrong'): os.mkdir(DUMP_DIR+'/pred_correct_adv_wrong')
     if not os.path.exists(DUMP_DIR+'/pred_wrong_adv_correct'): os.mkdir(DUMP_DIR+'/pred_wrong_adv_correct')
     if not os.path.exists(DUMP_DIR+'/pred_wrong_adv_wrong'): os.mkdir(DUMP_DIR+'/pred_wrong_adv_wrong')
