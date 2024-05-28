@@ -145,7 +145,8 @@ def main():
     dataset = modelnet if args.subset == True else subset_modelnet
 
     test_loader = DataLoader(dataset, batch_size=args.test_batch_size, shuffle=False)
-    device = torch.device("cpu")
+    device = torch.device("cpu" if args.no_cuda else "cuda")
+
     
     model = DGCNN_CAMGRAD(args).to(device)
     model = nn.DataParallel(model)
