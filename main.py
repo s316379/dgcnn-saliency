@@ -27,13 +27,13 @@ DUMP_DIR = 'dump'
 all_counters = np.zeros((40, 3), dtype=int)
 
 
-def drop_points(pointclouds_pl, labels_pl, args, model):
+def drop_points(pointclouds_pl, labels_pl, args, model, device):
     pointclouds_pl_adv = pointclouds_pl.clone().detach()
     pointclouds_pl_adv_np = pointclouds_pl_adv.clone().detach().numpy()
     # pointclouds_pl_adv_np.astype()
 
     for i in range(args.num_steps):
-        pointclouds_pl_adv = torch.from_numpy(pointclouds_pl_adv_np).to(dtype=torch.float32)
+        pointclouds_pl_adv = torch.from_numpy(pointclouds_pl_adv_np).to(dtype=torch.float32).to(device=device)
         pointclouds_pl_adv.requires_grad_()
 
 
@@ -169,7 +169,7 @@ def main():
         data.requires_grad_()
         batch_size = data.size()[0]
 
-        adversial_data = drop_points(data, label, args, model)
+        adversial_data = drop_points(data, label, args, model, device)
 
         # NATURAL DATA
         logits = model(data)        
