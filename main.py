@@ -42,7 +42,7 @@ def drop_points(pointclouds_pl, labels_pl, args, model, device):
         loss.backward()
 
         grad = pointclouds_pl_adv.grad
-        grad_np = grad.clone().detach().numpy()
+        grad_np = grad.clone().detach().cpu().numpy()
         ## median value
         sphere_core = np.median(pointclouds_pl_adv_np, axis=2, keepdims=True)
         
@@ -171,12 +171,12 @@ def main():
         test_pred.append(preds.detach().cpu().numpy())
 
         # ADVERSIAL DATA
-        logits_adv = model(adversial_data)        
+        logits_adv = model(adversial_data).to(device) 
         preds_adv = logits_adv.max(dim=1)[1]
         test_true_adv.append(label.cpu().numpy())
         test_pred_adv.append(preds_adv.detach().cpu().numpy())
 
-        plot_natural_and_advsarial_samples_all_situation(data.detach().numpy(), adversial_data.detach().numpy(), label.detach().numpy(), preds.detach().numpy(), preds_adv.detach().numpy(), all_counters, SHAPE_NAMES)
+        plot_natural_and_advsarial_samples_all_situation(data.detach().cpu().numpy(), adversial_data.detach().cpu().numpy(), label.detach().cpu().numpy(), preds.detach().cpu().numpy(), preds_adv.detach().cpu().numpy(), all_counters, SHAPE_NAMES)
 
     test_true = np.concatenate(test_true)
     test_pred = np.concatenate(test_pred)
