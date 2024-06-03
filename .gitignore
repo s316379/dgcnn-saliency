@@ -6,3 +6,4 @@ dgcnn-master/.DS_Store
 data/
 .vscode/
 dump/*/*
+dump_neg/*/*
