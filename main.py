@@ -145,7 +145,7 @@ def main():
     dataset = modelnet if args.subset == True else subset_modelnet
 
     test_loader = DataLoader(dataset, batch_size=args.test_batch_size, shuffle=False)
-    device = torch.device("cpu" if args.no_cuda else "cuda")
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     
     model = DGCNN_CAMGRAD(args).to(device)
@@ -172,7 +172,7 @@ def main():
         adversial_data = drop_points(data, label, args, model, device)
 
         # NATURAL DATA
-        logits = model(data)        
+        logits = model(data).to(device)
         preds = logits.max(dim=1)[1]
         test_true.append(label.cpu().numpy())
         test_pred.append(preds.detach().cpu().numpy())
