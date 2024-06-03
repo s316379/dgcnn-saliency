@@ -29,13 +29,12 @@ all_counters = np.zeros((40, 3), dtype=int)
 
 def drop_points(pointclouds_pl, labels_pl, args, model, device):
     pointclouds_pl_adv = pointclouds_pl.clone().detach()
-    pointclouds_pl_adv_np = pointclouds_pl_adv.clone().detach().numpy()
+    pointclouds_pl_adv_np = pointclouds_pl_adv.clone().detach().cpu().numpy()
     # pointclouds_pl_adv_np.astype()
 
     for i in range(args.num_steps):
         pointclouds_pl_adv = torch.from_numpy(pointclouds_pl_adv_np).to(dtype=torch.float32).to(device=device)
         pointclouds_pl_adv.requires_grad_()
-
 
         logits = model(pointclouds_pl_adv)
 
@@ -99,24 +98,18 @@ def plot_natural_and_advsarial_samples_all_situation(pointclouds_pl, pointclouds
 def main():
     # Training settings
     parser = argparse.ArgumentParser(description='Point Cloud Recognition')
-    parser.add_argument('--exp_name', type=str, default='exp', metavar='N', help='Name of the experiment')
-    parser.add_argument('--model', type=str, default='dgcnn', metavar='N', choices=['pointnet', 'dgcnn'], help='Model to use, [pointnet, dgcnn]')
     parser.add_argument('--dataset', type=str, default='modelnet40', metavar='N', choices=['modelnet40'])
-    parser.add_argument('--batch_size', type=int, default=32, metavar='batch_size', help='Size of batch)')
     parser.add_argument('--test_batch_size', type=int, default=8, metavar='batch_size', help='Size of batch)')
-    parser.add_argument('--epochs', type=int, default=250, metavar='N', help='number of episode to train ')
     parser.add_argument('--use_sgd', type=bool, default=True, help='Use SGD')
     parser.add_argument('--lr', type=float, default=0.001, metavar='LR', help='learning rate (default: 0.001, 0.1 if using sgd)')
     parser.add_argument('--momentum', type=float, default=0.9, metavar='M', help='SGD momentum (default: 0.9)')
     parser.add_argument('--no_cuda', type=bool, default=True, help='enables CUDA training')
-    parser.add_argument('--seed', type=int, default=1, metavar='S', help='random seed (default: 1)')
     parser.add_argument('--eval', type=bool,  default=False, help='evaluate the model')
     parser.add_argument('--num_points', type=int, default=1024, help='num of points to use')
     parser.add_argument('--dropout', type=float, default=0.5, help='dropout rate')
     parser.add_argument('--emb_dims', type=int, default=1024, metavar='N', help='Dimension of embeddings')
     parser.add_argument('--k', type=int, default=20, metavar='N', help='Num of nearest neighbors to use')
     parser.add_argument('--model_path', type=str, default='', metavar='N', help='Pretrained model path')
-    parser.add_argument('--num_votes', type=int, default=1, help='Aggregate classification scores from multiple rotations [default: 1]')
     parser.add_argument('--num_drops', type=int, default=10, help='num of points to drop each step')
     parser.add_argument('--num_steps', type=int, default=10, help='num of steps to drop each step')
     parser.add_argument('--drop_neg', action='store_true',help='drop negative points')
