@@ -134,7 +134,7 @@ def main():
     indices = np.random.choice(len(modelnet), 24, replace=False)
     subset_modelnet = Subset(modelnet, indices)
     
-    dataset = modelnet if args.subset == True else subset_modelnet
+    dataset = modelnet if args.subset == False else subset_modelnet
 
     test_loader = DataLoader(dataset, batch_size=args.test_batch_size, shuffle=False)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
