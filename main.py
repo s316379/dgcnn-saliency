@@ -98,7 +98,6 @@ def plot_natural_and_advsarial_samples_all_situation(pointclouds_pl, pointclouds
 def main():
     # Training settings
     parser = argparse.ArgumentParser(description='Point Cloud Recognition')
-    parser.add_argument('--dataset', type=str, default='modelnet40', metavar='N', choices=['modelnet40'])
     parser.add_argument('--test_batch_size', type=int, default=8, metavar='batch_size', help='Size of batch)')
     parser.add_argument('--use_sgd', type=bool, default=True, help='Use SGD')
     parser.add_argument('--lr', type=float, default=0.001, metavar='LR', help='learning rate (default: 0.001, 0.1 if using sgd)')
@@ -184,6 +183,7 @@ def main():
     avg_per_class_acc = metrics.balanced_accuracy_score(test_true, test_pred)
     outstr = 'Test natural:: test acc: %.6f, test avg acc: %.6f'%(test_acc, avg_per_class_acc)
     cprint.info(outstr)
+    print(test_true, test_pred)
 
     test_true_adv = np.concatenate(test_true_adv)
     test_pred_adv = np.concatenate(test_pred_adv)
