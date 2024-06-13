@@ -15,7 +15,9 @@ from eulerangles import euler2matrix as euler2mat
 # Point cloud IO
 import numpy as np
 from plyfile import PlyData, PlyElement
-
+from matplotlib.colors import LinearSegmentedColormap, Normalize
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
  
 # ----------------------------------------
 # Point Cloud/Volume Conversions
@@ -406,3 +408,56 @@ def write_ply_color(points, labels, out_filename, num_classes=None):
         c = [int(x*255) for x in c]
         fout.write('v %f %f %f %d %d %d\n' % (points[0,1],points[1,i],points[2,i],c[:,0],c[:,1],c[:,2]))
     fout.close()
+
+def plot_colored_pointcloud(batch_points, batch_values):
+    """
+    Plot a batch of 3D point clouds with points colored based on the provided values.
+    
+    Args:
+        batch_points (np.ndarray): An array of shape (N, 3, 1024) representing the batch of point clouds.
+        batch_values (np.ndarray): An array of shape (N, 1024) representing the values for coloring.
+    """
+    assert len(batch_points.shape) == 3 and batch_points.shape[1:] == (3, 1024), "Points array must be of shape (N, 3, 1024)"
+    assert len(batch_values.shape) == 2 and batch_values.shape[1] == 1024, "Values array must be of shape (N, 1024)"
+
+    num_pointclouds = batch_points.shape[0]
+
+    # Define the custom colormap
+    colors = [(1, 0, 0), (1, 1, 0), (0, 0, 1)]  # Red -> Yellow -> Blue
+    n_bins = 100  # Number of bins in the colormap
+    cmap_name = 'red_yellow_blue'
+    custom_cmap = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bins)
+
+    for i in range(num_pointclouds):
+        points = batch_points[i]
+        values = batch_values[i]
+
+        # Transpose the points array to shape (1024, 3) for plotting
+        points  =points.T        
+        points  =points.detach().numpy()
+
+
+        # Apply a nonlinear normalization to emphasize the middle range
+        norm = Normalize(vmin=np.min(values), vmax=np.max(values))
+        normalized_values = norm(values)
+
+        # Apply a nonlinear transformation (e.g., square root)
+        transformed_values = np.sqrt(normalized_values)
+
+        # Map the transformed values to colors using the custom colormap
+        colors = custom_cmap(transformed_values)
+
+        # Create the scatter plot
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        sc = ax.scatter(points[:, 0], points[:, 1], points[:, 2], c=colors, marker='o', edgecolors='k', linewidths=0.5, alpha=0.8)
+
+        # Optionally add a color bar
+        cbar = plt.colorbar(cm.ScalarMappable(norm=norm, cmap=custom_cmap), ax=ax)
+        cbar.set_label('Values')
+
+        # Set plot title
+        ax.set_title(f'Point Cloud {i+1}')
+
+        # Show plot
+        plt.show()

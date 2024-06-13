@@ -30,6 +30,7 @@ all_counters = np.zeros((40, 3), dtype=int)
 def drop_points(pointclouds_pl, labels_pl, args, model, device):
     pointclouds_pl_adv = pointclouds_pl.clone().detach()
     pointclouds_pl_adv_np = pointclouds_pl_adv.clone().detach().cpu().numpy()
+    saliency_map = []
     # pointclouds_pl_adv_np.astype()
 
     for i in range(args.num_steps):
@@ -62,8 +63,9 @@ def drop_points(pointclouds_pl, labels_pl, args, model, device):
             tmp[j] = np.delete(pointclouds_pl_adv_np[j], drop_indice[j], axis=1) # along N points to delete
             
         pointclouds_pl_adv_np = tmp.copy()
+        saliency_map.append(sphere_map)
         
-    return pointclouds_pl_adv
+    return pointclouds_pl_adv, saliency_map[0]
 
 def plot_natural_and_advsarial_samples_all_situation(pointclouds_pl, pointclouds_pl_adv, labels_pl, pred_val, pred_val_adv, all_counters, SHAPE_NAMES):
     for i in range(labels_pl.shape[0]):
@@ -104,7 +106,7 @@ def main():
     parser.add_argument('--momentum', type=float, default=0.9, metavar='M', help='SGD momentum (default: 0.9)')
     parser.add_argument('--no_cuda', type=bool, default=True, help='enables CUDA training')
     parser.add_argument('--eval', type=bool,  default=False, help='evaluate the model')
-    parser.add_argument('--num_points', type=int, default=1024, help='num of points to use')
+    parser.add_argument('--num_points', type=int, default=3072, help='num of points to use')
     parser.add_argument('--dropout', type=float, default=0.5, help='dropout rate')
     parser.add_argument('--emb_dims', type=int, default=1024, metavar='N', help='Dimension of embeddings')
     parser.add_argument('--k', type=int, default=20, metavar='N', help='Num of nearest neighbors to use')
@@ -161,7 +163,8 @@ def main():
         data.requires_grad_()
         batch_size = data.size()[0]
 
-        adversial_data = drop_points(data, label, args, model, device)
+        adversial_data, saliency_map = drop_points(data, label, args, model, device)
+        pc_util.plot_colored_pointcloud(data, saliency_map)
 
         # NATURAL DATA
         logits = model(data).to(device)
