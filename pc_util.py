@@ -417,8 +417,9 @@ def plot_colored_pointcloud(batch_points, batch_values, filename=None):
         batch_points (np.ndarray): An array of shape (N, 3, 1024) representing the batch of point clouds.
         batch_values (np.ndarray): An array of shape (N, 1024) representing the values for coloring.
     """
-    assert len(batch_points.shape) == 3 and batch_points.shape[1:] == (3, 1024), "Points array must be of shape (N, 3, 1024)"
-    assert len(batch_values.shape) == 2 and batch_values.shape[1] == 1024, "Values array must be of shape (N, 1024)"
+    assert len(batch_points.shape) == 3, "Points array must be of shape (N, 3, P)"
+    assert len(batch_values.shape) == 2, "Values array must be of shape (N, P)"
+    assert batch_values.shape[1] == batch_points.shape[2:], "Points and Values array should have matching number of points"
 
     num_pointclouds = batch_points.shape[0]
 
