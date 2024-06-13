@@ -409,7 +409,7 @@ def write_ply_color(points, labels, out_filename, num_classes=None):
         fout.write('v %f %f %f %d %d %d\n' % (points[0,1],points[1,i],points[2,i],c[:,0],c[:,1],c[:,2]))
     fout.close()
 
-def plot_colored_pointcloud(batch_points, batch_values, filename='None'):
+def plot_colored_pointcloud(batch_points, batch_values, filename=None):
     """
     Plot a batch of 3D point clouds with points colored based on the provided values.
     
