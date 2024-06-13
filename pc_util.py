@@ -461,6 +461,6 @@ def plot_colored_pointcloud(batch_points, batch_values, filename=None):
 
         # Show plot
         if filename is not None:
-          plt.save(filename)
+          plt.savefig(filename)
         else:
           plt.show()
