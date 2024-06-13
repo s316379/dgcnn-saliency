@@ -429,9 +429,8 @@ def plot_colored_pointcloud(batch_points, batch_values, filename=None, color_map
     #custom_cmap = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bins)
 
  
-    norm = Normalize(vmin=np.min(values), vmax=np.max(values))
+    
     cmap = cm.get_cmap(color_map)  # Using 'viridis' for better perceptual distinction
-    colors = cmap(norm(values))
 
     for i in range(num_pointclouds):
         points = batch_points[i]
@@ -442,15 +441,9 @@ def plot_colored_pointcloud(batch_points, batch_values, filename=None, color_map
         points  =points.cpu().detach().numpy()
 
 
-        # Apply a nonlinear normalization to emphasize the middle range
         norm = Normalize(vmin=np.min(values), vmax=np.max(values))
-        normalized_values = norm(values)
+        colors = cmap(norm(values))
 
-        # Apply a nonlinear transformation (e.g., square root)
-        transformed_values = np.sqrt(normalized_values)
-
-        # Map the transformed values to colors using the custom colormap
-        colors = custom_cmap(transformed_values)
 
         # Create the scatter plot
         fig = plt.figure()
