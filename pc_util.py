@@ -428,6 +428,8 @@ def plot_colored_pointcloud(batch_points, batch_values, filename=None, color_map
     #cmap_name = cmap
     #custom_cmap = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bins)
 
+ 
+    norm = Normalize(vmin=np.min(values), vmax=np.max(values))
     cmap = cm.get_cmap(color_map)  # Using 'viridis' for better perceptual distinction
     colors = cmap(norm(values))
 
