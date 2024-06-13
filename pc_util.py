@@ -409,7 +409,7 @@ def write_ply_color(points, labels, out_filename, num_classes=None):
         fout.write('v %f %f %f %d %d %d\n' % (points[0,1],points[1,i],points[2,i],c[:,0],c[:,1],c[:,2]))
     fout.close()
 
-def plot_colored_pointcloud(batch_points, batch_values, filename=None):
+def plot_colored_pointcloud(batch_points, batch_values, filename=None, color_map='viridis'):
     """
     Plot a batch of 3D point clouds with points colored based on the provided values.
     
@@ -423,10 +423,13 @@ def plot_colored_pointcloud(batch_points, batch_values, filename=None):
     num_pointclouds = batch_points.shape[0]
 
     # Define the custom colormap
-    colors = [(1, 0, 0), (1, 1, 0), (0, 0, 1)]  # Red -> Yellow -> Blue
-    n_bins = 100  # Number of bins in the colormap
-    cmap_name = 'red_yellow_blue'
-    custom_cmap = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bins)
+    #colors = [(1, 0, 0), (1, 1, 0), (0, 0, 1)]  # Red -> Yellow -> Blue
+    #n_bins = 100  # Number of bins in the colormap
+    #cmap_name = cmap
+    #custom_cmap = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bins)
+
+    cmap = cm.get_cmap(color_map)  # Using 'viridis' for better perceptual distinction
+    colors = cmap(norm(values))
 
     for i in range(num_pointclouds):
         points = batch_points[i]
@@ -453,7 +456,7 @@ def plot_colored_pointcloud(batch_points, batch_values, filename=None):
         sc = ax.scatter(points[:, 0], points[:, 1], points[:, 2], c=colors, marker='o', edgecolors='k', linewidths=0.5, alpha=0.8)
 
         # Optionally add a color bar
-        cbar = plt.colorbar(cm.ScalarMappable(norm=norm, cmap=custom_cmap), ax=ax)
+        cbar = plt.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
         cbar.set_label('Values')
 
         # Set plot title
