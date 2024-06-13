@@ -409,7 +409,7 @@ def write_ply_color(points, labels, out_filename, num_classes=None):
         fout.write('v %f %f %f %d %d %d\n' % (points[0,1],points[1,i],points[2,i],c[:,0],c[:,1],c[:,2]))
     fout.close()
 
-def plot_colored_pointcloud(batch_points, batch_values):
+def plot_colored_pointcloud(batch_points, batch_values, filename='None'):
     """
     Plot a batch of 3D point clouds with points colored based on the provided values.
     
@@ -434,7 +434,7 @@ def plot_colored_pointcloud(batch_points, batch_values):
 
         # Transpose the points array to shape (1024, 3) for plotting
         points  =points.T        
-        points  =points.detach().numpy()
+        points  =points.cpu().detach().numpy()
 
 
         # Apply a nonlinear normalization to emphasize the middle range
@@ -460,4 +460,7 @@ def plot_colored_pointcloud(batch_points, batch_values):
         ax.set_title(f'Point Cloud {i+1}')
 
         # Show plot
-        plt.show()
+        if filename is not None:
+          plt.save(filename)
+        else:
+          plt.show()
